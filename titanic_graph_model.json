@@ -113,24 +113,10 @@
         "Class"
       ],
       "properties": {
-        "code": ""
+        "code": "",
+        "cabin": ""
       },
       "style": {}
-    },
-    {
-      "id": "n5",
-      "position": {
-        "x": 220.15683894723003,
-        "y": 255.12191554938192
-      },
-      "caption": "",
-      "style": {},
-      "labels": [
-        "Cabin"
-      ],
-      "properties": {
-        "name": ""
-      }
     }
   ],
   "relationships": [
@@ -157,17 +143,10 @@
       "type": "TRAVELLED_IN",
       "properties": {
         "survived": "",
-        "lifeboat": ""
+        "lifeboat": "",
+        "cabin": ""
       },
       "style": {}
-    },
-    {
-      "id": "n4",
-      "type": "IN",
-      "style": {},
-      "properties": {},
-      "fromId": "n4",
-      "toId": "n5"
     }
   ]
 }
