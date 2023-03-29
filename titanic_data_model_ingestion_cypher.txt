@@ -14,15 +14,21 @@ ELSE 0 END AS lifeboat,
 gender,class, cabin,survived
 MERGE (p:Passenger{Id:toInteger(passengerid),name:passname,gender:gender,age:toInteger(age)})
 MERGE (cl:Class{code:toInteger(class)})
-WITH p,cabin,survived,cl,lifeboat
+WITH p,cl,survived,lifeboat,cabin
+MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)
+WITH p,cl,cabin
 CALL apoc.do.when(cabin is NOT NULL,
-  'MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat,cabin:cabin}]->(cl) 
-   RETURN cl AS node',
-  'MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)  RETURN cl AS node',
-  {cabin:cabin,p:p,survived:survived,cl:cl,lifeboat:lifeboat}
+'MERGE (cb:Cabin{name:cabin}) 
+WITH (p),(cl),(cb)
+MERGE (cb)-[:BELONGS_TO]->(cl)
+MERGE (cb)-[:ALLOCATED_TO]->(p)
+RETURN cb AS node',
+'',
+ {cabin:cabin,p:p,cl:cl}
 )
 YIELD value
 RETURN value.node AS node;
+
 
 //Cypher for creating the below Nodes & Relationships:
 // Ticket.
