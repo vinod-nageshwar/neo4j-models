@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "n0",
+      "position": {
+        "x": -260.93911915395415,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Passenger"
+      ],
+      "properties": {
+        "Id": "",
+        "name": "",
+        "gender": "",
+        "age": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "position": {
+        "x": 121.35650138142552,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Ticket"
+      ],
+      "properties": {
+        "ticketno": "",
+        "fare": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n2",
+      "position": {
+        "x": 503.6521219168052,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Port"
+      ],
+      "properties": {
+        "name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n3",
+      "position": {
+        "x": -260.93911915395415,
+        "y": 308.20787534121024
+      },
+      "caption": "",
+      "labels": [
+        "Cabin"
+      ],
+      "properties": {
+        "name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "position": {
+        "x": 270.63106875646764,
+        "y": 308.20787534121024
+      },
+      "caption": "",
+      "labels": [
+        "Class"
+      ],
+      "properties": {
+        "code": ""
+      },
+      "style": {}
+    }
+  ],
+  "relationships": [
+    {
+      "id": "n0",
+      "fromId": "n1",
+      "toId": "n0",
+      "type": "DETAILS_FOR",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "fromId": "n1",
+      "toId": "n2",
+      "type": "BOARDING_AT",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n2",
+      "fromId": "n0",
+      "toId": "n3",
+      "type": "TRAVELLED_IN",
+      "properties": {
+        "survived": "",
+        "lifeboat": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n3",
+      "fromId": "n0",
+      "toId": "n4",
+      "type": "TRAVELLED_IN",
+      "properties": {
+        "survived": "",
+        "lifeboat": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "fromId": "n3",
+      "toId": "n4",
+      "type": "IN",
+      "properties": {},
+      "style": {}
+    }
+  ],
+  "style": {
+    "font-family": "sans-serif",
+    "background-color": "#ffffff",
+    "background-image": "",
+    "background-size": "100%",
+    "node-color": "#ffffff",
+    "border-width": 4,
+    "border-color": "#000000",
+    "radius": 50,
+    "node-padding": 5,
+    "node-margin": 2,
+    "outside-position": "auto",
+    "node-icon-image": "",
+    "node-background-image": "",
+    "icon-position": "inside",
+    "icon-size": 64,
+    "caption-position": "inside",
+    "caption-max-width": 200,
+    "caption-color": "#000000",
+    "caption-font-size": 50,
+    "caption-font-weight": "normal",
+    "label-position": "inside",
+    "label-display": "pill",
+    "label-color": "#000000",
+    "label-background-color": "#ffffff",
+    "label-border-color": "#000000",
+    "label-border-width": 4,
+    "label-font-size": 40,
+    "label-padding": 5,
+    "label-margin": 4,
+    "directionality": "directed",
+    "detail-position": "inline",
+    "detail-orientation": "parallel",
+    "arrow-width": 5,
+    "arrow-color": "#000000",
+    "margin-start": 5,
+    "margin-end": 5,
+    "margin-peer": 20,
+    "attachment-start": "normal",
+    "attachment-end": "normal",
+    "relationship-icon-image": "",
+    "type-color": "#000000",
+    "type-background-color": "#ffffff",
+    "type-border-color": "#000000",
+    "type-border-width": 0,
+    "type-font-size": 16,
+    "type-padding": 5,
+    "property-position": "outside",
+    "property-alignment": "colon",
+    "property-color": "#000000",
+    "property-font-size": 16,
+    "property-font-weight": "normal"
+  }
+}
