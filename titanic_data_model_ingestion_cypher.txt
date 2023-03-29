@@ -1,0 +1,50 @@
+//Cypher for creating the below Nodes & Relationships:
+// Passenger, Cabin & Class.
+// TRAVELLED_IN & IN 
+LOAD CSV WITH HEADERS FROM 'file:///d://titanic.csv' AS row with row
+where row.Survived IN ['0','1'] AND row.Age_wiki IS NOT NULL
+WITH row.Name AS name,apoc.text.indexOf(row.Name, '(') AS pos,row.PassengerId AS passengerid,row.Sex as gender,row.Pclass AS class, row.Cabin as cabin,row.Survived AS survived,row.Age_wiki AS age,row.Lifeboat as lifeboat
+WITH passengerid,age,pos,name,
+CASE 
+WHEN pos >0 THEN LEFT(name,pos)
+ELSE name END AS passname,
+CASE 
+WHEN lifeboat IS NOT NULL THEN 1
+ELSE 0 END AS lifeboat,
+gender,class, cabin,survived
+MERGE (p:Passenger{Id:toInteger(passengerid),name:passname,gender:gender,age:age})
+WITH p,cabin,survived,class,lifeboat
+CALL apoc.do.when(cabin is NOT NULL,
+  'MERGE (cb:Cabin{name:cabin}) MERGE (cl:Class{code:toInteger(class)}) 
+  WITH p,cb,survived,cl,lifeboat MATCH (p),(cb),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cb) MERGE (cb)-[:IN]->(cl) RETURN cb AS node',
+  'MERGE (cl:Class{code:toInteger(class)}) 
+  WITH p,survived,cl,lifeboat MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)  RETURN cl AS node',
+  {cabin:cabin,p:p,survived:survived,class:class,lifeboat:lifeboat}
+)
+YIELD value
+RETURN value.node AS node;
+
+//Cypher for creating the below Nodes & Relationships:
+// Ticket.
+// DETAILS_FOR 
+LOAD CSV WITH HEADERS FROM 'file:///d://titanic.csv' AS row with row
+where row.Survived IN ['0','1'] AND row.Age_wiki IS NOT NULL
+WITH row.PassengerId AS passengerid,row.Fare as fare,row.Ticket as ticket
+MERGE (tk:Ticket{ticketno:ticket})
+ON MATCH set tk.fare = toInteger(tk.fare)+toInteger(fare)
+ON CREATE set tk.fare = toInteger(fare)
+WITH tk,passengerid,ticket
+MATCH (p:Passenger{Id:toInteger(passengerid)})
+MATCH (tk:Ticket{ticketno:ticket})
+MERGE (tk)-[:DETAILS_FOR]->(p)
+
+//Cypher for creating the below Nodes & Relationships:
+// Port.
+// BOARDING_AT 
+LOAD CSV WITH HEADERS FROM 'file:///d://titanic.csv' AS row with row
+where row.Survived IN ['0','1'] AND row.Age_wiki IS NOT NULL
+WITH row.Boarded as boarded,row.Ticket as ticket
+MERGE (pt:Port{name:boarded})
+WITH pt,ticket
+MATCH (tk:Ticket{ticketno:ticket})
+MERGE (tk)-[:BOARDING_AT]->(pt)
