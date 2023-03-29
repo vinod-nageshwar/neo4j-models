@@ -1,4 +1,130 @@
 {
+  "nodes": [
+    {
+      "id": "n0",
+      "position": {
+        "x": -260.93911915395415,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Passenger"
+      ],
+      "properties": {
+        "Id": "",
+        "name": "",
+        "gender": "",
+        "age": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "position": {
+        "x": 121.35650138142552,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Ticket"
+      ],
+      "properties": {
+        "ticketno": "",
+        "fare": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n2",
+      "position": {
+        "x": 437.6521219168052,
+        "y": 9.609041613466593
+      },
+      "caption": "",
+      "labels": [
+        "Port"
+      ],
+      "properties": {
+        "name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "position": {
+        "x": 149.27561748195876,
+        "y": 358.8237782493795
+      },
+      "caption": "",
+      "labels": [
+        "Class"
+      ],
+      "properties": {
+        "code": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n5",
+      "position": {
+        "x": -260.93911915395415,
+        "y": 358.8237782493795
+      },
+      "caption": "",
+      "labels": [
+        "Cabin"
+      ],
+      "properties": {
+        "name": ""
+      },
+      "style": {}
+    }
+  ],
+  "relationships": [
+    {
+      "id": "n0",
+      "fromId": "n1",
+      "toId": "n0",
+      "type": "DETAILS_FOR",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "fromId": "n1",
+      "toId": "n2",
+      "type": "BOARDING_AT",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n3",
+      "fromId": "n0",
+      "toId": "n4",
+      "type": "TRAVELLED_IN",
+      "properties": {
+        "survived": "",
+        "lifeboat": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "fromId": "n5",
+      "toId": "n0",
+      "type": "ALLOCATED_TO",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n5",
+      "fromId": "n5",
+      "toId": "n4",
+      "type": "BELONGS_TO",
+      "properties": {},
+      "style": {}
+    }
+  ],
   "style": {
     "font-family": "sans-serif",
     "background-color": "#ffffff",
@@ -51,102 +177,5 @@
     "property-color": "#000000",
     "property-font-size": 16,
     "property-font-weight": "normal"
-  },
-  "nodes": [
-    {
-      "id": "n0",
-      "position": {
-        "x": -260.93911915395415,
-        "y": 9.609041613466593
-      },
-      "caption": "",
-      "labels": [
-        "Passenger"
-      ],
-      "properties": {
-        "Id": "",
-        "name": "",
-        "gender": "",
-        "age": ""
-      },
-      "style": {}
-    },
-    {
-      "id": "n1",
-      "position": {
-        "x": 121.35650138142552,
-        "y": 9.609041613466593
-      },
-      "caption": "",
-      "labels": [
-        "Ticket"
-      ],
-      "properties": {
-        "ticketno": "",
-        "fare": ""
-      },
-      "style": {}
-    },
-    {
-      "id": "n2",
-      "position": {
-        "x": 503.6521219168052,
-        "y": 9.609041613466593
-      },
-      "caption": "",
-      "labels": [
-        "Port"
-      ],
-      "properties": {
-        "name": ""
-      },
-      "style": {}
-    },
-    {
-      "id": "n4",
-      "position": {
-        "x": -26.650306077770765,
-        "y": 255.12191554938192
-      },
-      "caption": "",
-      "labels": [
-        "Class"
-      ],
-      "properties": {
-        "code": "",
-        "cabin": ""
-      },
-      "style": {}
-    }
-  ],
-  "relationships": [
-    {
-      "id": "n0",
-      "fromId": "n1",
-      "toId": "n0",
-      "type": "DETAILS_FOR",
-      "properties": {},
-      "style": {}
-    },
-    {
-      "id": "n1",
-      "fromId": "n1",
-      "toId": "n2",
-      "type": "BOARDING_AT",
-      "properties": {},
-      "style": {}
-    },
-    {
-      "id": "n3",
-      "fromId": "n0",
-      "toId": "n4",
-      "type": "TRAVELLED_IN",
-      "properties": {
-        "survived": "",
-        "lifeboat": "",
-        "cabin": ""
-      },
-      "style": {}
-    }
-  ]
+  }
 }
