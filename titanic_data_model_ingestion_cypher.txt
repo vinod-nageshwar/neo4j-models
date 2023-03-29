@@ -12,14 +12,14 @@ CASE
 WHEN lifeboat IS NOT NULL THEN 1
 ELSE 0 END AS lifeboat,
 gender,class, cabin,survived
-MERGE (p:Passenger{Id:toInteger(passengerid),name:passname,gender:gender,age:age})
-WITH p,cabin,survived,class,lifeboat
+MERGE (p:Passenger{Id:toInteger(passengerid),name:passname,gender:gender,age:toInteger(age)})
+MERGE (cl:Class{code:toInteger(class)})
+WITH p,cabin,survived,cl,lifeboat
 CALL apoc.do.when(cabin is NOT NULL,
-  'MERGE (cl:Class{code:toInteger(class)}) MERGE (cb:Cabin{name:cabin})
-  WITH p,cb,survived,cl,lifeboat MATCH (p),(cb),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl) MERGE (cl)-[:IN]->(cb) RETURN cb AS node',
-  'MERGE (cl:Class{code:toInteger(class)}) 
-  WITH p,survived,cl,lifeboat MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)  RETURN cl AS node',
-  {cabin:cabin,p:p,survived:survived,class:class,lifeboat:lifeboat}
+  'MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat,cabin:cabin}]->(cl) 
+   RETURN cl AS node',
+  'MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)  RETURN cl AS node',
+  {cabin:cabin,p:p,survived:survived,cl:cl,lifeboat:lifeboat}
 )
 YIELD value
 RETURN value.node AS node;
@@ -47,4 +47,4 @@ WITH row.Boarded as boarded,row.Ticket as ticket
 MERGE (pt:Port{name:boarded})
 WITH pt,ticket
 MATCH (tk:Ticket{ticketno:ticket})
-MERGE (tk)-[:BOARDING_AT]->(pt)
+MERGE (tk)-[:BOARDING_AT]->(pt);
