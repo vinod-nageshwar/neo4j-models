@@ -15,8 +15,8 @@ gender,class, cabin,survived
 MERGE (p:Passenger{Id:toInteger(passengerid),name:passname,gender:gender,age:age})
 WITH p,cabin,survived,class,lifeboat
 CALL apoc.do.when(cabin is NOT NULL,
-  'MERGE (cb:Cabin{name:cabin}) MERGE (cl:Class{code:toInteger(class)}) 
-  WITH p,cb,survived,cl,lifeboat MATCH (p),(cb),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cb) MERGE (cb)-[:IN]->(cl) RETURN cb AS node',
+  'MERGE (cl:Class{code:toInteger(class)}) MERGE (cb:Cabin{name:cabin})
+  WITH p,cb,survived,cl,lifeboat MATCH (p),(cb),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl) MERGE (cl)-[:IN]->(cb) RETURN cb AS node',
   'MERGE (cl:Class{code:toInteger(class)}) 
   WITH p,survived,cl,lifeboat MATCH (p),(cl) MERGE (p)-[:TRAVELLED_IN{survived:toInteger(survived),lifeboat:lifeboat}]->(cl)  RETURN cl AS node',
   {cabin:cabin,p:p,survived:survived,class:class,lifeboat:lifeboat}
@@ -36,7 +36,7 @@ ON CREATE set tk.fare = toInteger(fare)
 WITH tk,passengerid,ticket
 MATCH (p:Passenger{Id:toInteger(passengerid)})
 MATCH (tk:Ticket{ticketno:ticket})
-MERGE (tk)-[:DETAILS_FOR]->(p)
+MERGE (tk)-[:DETAILS_FOR]->(p);
 
 //Cypher for creating the below Nodes & Relationships:
 // Port.
