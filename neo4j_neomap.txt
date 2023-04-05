@@ -1,0 +1,56 @@
+CALL apoc.load.json("https://raw.githubusercontent.com/vinod-nageshwar/neo4j-models/main/cities.json")
+YIELD value
+WITH value.cities AS cities
+UNWIND cities AS city
+CREATE (c:City)
+SET c.name = city.name, c.location = Point({latitude:city.latitude,longitude:city.longitude})
+
+CALL apoc.load.json("https://raw.githubusercontent.com/vinod-nageshwar/neo4j-models/main/cities.json")
+YIELD value
+UNWIND value.distance as distance
+MATCH (c1:City{name:distance.from}),(c2:City{name:distance.to})
+MERGE (c1)-[:ROAD {distanceinkm:toInteger(distance.km)}]->(c2)
+
+CALL gds.graph.create(
+    'myGraph',
+    'City',
+    'ROAD',
+    {
+        relationshipProperties: 'distanceinkm'
+    }
+)
+
+//Gets the Shortest path between cities
+MATCH (source:City {name: 'Bengaluru'}), (target:City {name: 'Coimbatore'})
+CALL gds.shortestPath.dijkstra.stream('myGraph', {
+    sourceNode: source,
+    targetNode: target,
+    relationshipWeightProperty: 'distanceinkm'
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).name AS sourceNodeName,
+    gds.util.asNode(targetNode).name AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY index
+
+
+MATCH (source:City {name: 'Bengaluru'}), (target:City {name: 'Coimbatore'})
+CALL gds.shortestPath.dijkstra.stream('myGraph', {
+    sourceNode: source,
+    targetNode: target,
+    relationshipWeightProperty: 'distanceinkm'
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+WITH
+    index,
+         [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS name,
+         [nodeId IN nodeIds | gds.util.asNode(nodeId).location.latitude] AS latitude,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).location.longitude] AS longitude,costs  
+ORDER BY index
+unwind range(0, size(name)-1) as i
+return name[i] as city,latitude[i] as latitude,  longitude[i] as longitude,costs[i] as cost
