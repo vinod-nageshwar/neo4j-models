@@ -1,0 +1,34 @@
+CREATE CONSTRAINT unq_Class IF NOT EXISTS FOR (n:Class) REQUIRE (n.class) IS UNIQUE
+CREATE CONSTRAINT unq_Ticket IF NOT EXISTS FOR (n:Ticket) REQUIRE (n.Id,n.fare) IS UNIQUE
+CREATE CONSTRAINT unq_Person IF NOT EXISTS FOR (n:Person) REQUIRE (n.Id,n.name,n.age,n.sex) IS UNIQUE
+CREATE CONSTRAINT unq_Location IF NOT EXISTS FOR (n:Location) REQUIRE (n.name) IS UNIQUE
+
+CREATE CONSTRAINT ticket_person_parch IF NOT EXISTS FOR ()-[r:DETAILS_OF]-() REQUIRE r.parch IS NOT NULL
+CREATE CONSTRAINT ticket_person_sibsp IF NOT EXISTS FOR ()-[r:DETAILS_OF]-() REQUIRE r.sibsp IS NOT NULL
+CREATE CONSTRAINT person_class_survived IF NOT EXISTS FOR ()-[r:TRAVELLED_IN]-() REQUIRE r.survived IS NOT NULL
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/datasciencedojo/datasets/refs/heads/master/titanic.csv' AS row
+WITH row,
+(CASE row.Sex
+  WHEN 'male'  THEN 'M'
+  WHEN 'female' THEN 'F'
+END) AS sex,
+(CASE row.Embarked
+  WHEN 'S'  THEN 'Southampton'
+  WHEN 'C' THEN 'Cherbourg'
+  WHEN 'Q' THEN 'Queenstown'
+END) AS embarkment,
+(CASE row.Survived
+  WHEN '0'  THEN 'Y'
+  WHEN '1' THEN 'N'
+  END) AS survived
+MERGE (p:Person{Id:toInteger(row.PassengerId)})
+SET p.name=row.Name,p.age=toInteger(row.Age),p.sex=sex
+WITH p,embarkment,row,survived
+WHERE embarkment IS NOT NULL
+MERGE (tkt:Ticket{Id:row.Ticket,fare:toFloat(row.Fare)})
+MERGE (loc:Location{name:embarkment})
+MERGE (tkt)-[:BOARDING_AT]->(loc)
+MERGE (tkt)-[:DETAILS_OF{parch:COALESCE(row.Parch,0),sibsp:COALESCE(row.SibSp,0)}]->(p)
+MERGE (cs:Class{class:row.Pclass,cabin:COALESCE(row.Cabin,'-')})
+MERGE (p)-[:TRAVELLED_IN{survived:survived}]->(cs)
